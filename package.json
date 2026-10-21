@@ -1,0 +1,7 @@
+{
+  "name": "crypto-dashboard-workspace",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix client/crypto-dashboard run dev"
+  }
+}
