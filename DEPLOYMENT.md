@@ -1,18 +1,20 @@
-# Deployment
+# Deploy on Vercel
 
-The Vercel frontend and Express API are separate services. The frontend cannot call an API running on a developer's `localhost`.
+The Next.js app now contains the authentication and investment API routes, so the frontend and API are deployed together on Vercel. Render is not required.
 
-## Deploy the API
+## Vercel project settings
 
-1. Create a Render Blueprint from this repository and use the included `render.yaml`.
-2. Provide `MONGO_URI` when prompted. It must point to a MongoDB instance reachable from Render; a local `mongodb://127.0.0.1...` URI will not work in production.
-3. Render generates `JWT_SECRET`. Keep it private.
-4. Wait for the API service to finish deploying and copy its public HTTPS URL.
+Set the Vercel project root directory to `client/crypto-dashboard`, with the standard Next.js build command (`npm run build`).
 
-## Connect Vercel to the API
+Add these environment variables for Production, Preview, and Development as needed:
 
-1. In the Vercel project settings, add `NEXT_PUBLIC_API_URL` with the Render API URL (for example, `https://crypto-dashboard-api.onrender.com`).
-2. Redeploy the frontend so the public environment variable is included in its build.
-3. The API accepts browser CORS requests from the frontend; no CORS environment variable is required.
+- `MONGO_URI`: a MongoDB Atlas connection string reachable from Vercel. A local `127.0.0.1` or `localhost` database URL only works on your computer.
+- `JWT_SECRET`: a long, random, private signing secret. Do not use the example or commit the real value.
 
-The login, registration, and dashboard API requests go through the frontend's same-origin `/api` proxy, which forwards them to the backend. It uses `API_URL`, then `NEXT_PUBLIC_API_URL`, then the Render URL above. To use a locally running backend during development, set `API_URL=http://localhost:5000` in the frontend environment.
+For MongoDB Atlas, add the database user and configure Atlas Network Access so Vercel functions can connect. Protect the database with a strong password and grant only the required database permissions.
+
+After setting the variables, redeploy the Vercel project. Authentication uses `/api/auth/register` and `/api/auth/login`; investment endpoints are under `/api/investments`.
+
+## Local development
+
+Set `MONGO_URI` and `JWT_SECRET` in `client/crypto-dashboard/.env.local`, then start Next.js with `npm run dev` from `client/crypto-dashboard`. Local MongoDB is fine for local development; Vercel requires a hosted MongoDB database.
