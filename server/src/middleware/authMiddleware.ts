@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 
-interface AuthRequest extends Request {   // Fixed naming
+interface AuthRequest extends Request {
     user?: any;
 }
 
@@ -9,7 +9,7 @@ export const authenticateJWT = (req: AuthRequest, res: Response, next: NextFunct
     const authHeader = req.header('Authorization');
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({ message: 'Authorization required. Use Bearer token' });
+        return res.status(401).json({ message: 'Authorization required. Use Bearer <token>' });
     }
 
     const token = authHeader.split(' ')[1];
@@ -19,7 +19,7 @@ export const authenticateJWT = (req: AuthRequest, res: Response, next: NextFunct
     }
 
     try {
-        const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+        const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'development-secret');
         req.user = decoded;
         (req as any).userId = decoded.id;
         next();

@@ -19,39 +19,31 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
-      if (!apiUrl) {
-        throw new Error('API URL is not configured');
-      }
-
-      const response = await fetch(
-        `${apiUrl.replace(/\/$/, '')}/api/auth/login`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await fetch(`${apiUrl.replace(/\/$/, '')}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email.trim().toLowerCase(),
+          password: formData.password,
+        }),
+      });
 
       const data = await response.json();
 
       if (response.ok && data.token) {
         login(data.token, {
-          id: data.userId || '1',
-          name: 'User',
-          email: formData.email,
+          id: data.user?.id || data.userId || '1',
+          name: data.user?.name || 'User',
+          email: data.user?.email || formData.email.trim().toLowerCase(),
         });
         router.push('/dashboard');
       } else {
         setError(data.message || 'Login failed');
       }
     } catch (err) {
-      setError(
-        err instanceof Error && err.message === 'API URL is not configured'
-          ? 'Login service is not configured'
-          : 'Cannot connect to server'
-      );
+      setError('Cannot connect to server');
     } finally {
       setLoading(false);
     }
