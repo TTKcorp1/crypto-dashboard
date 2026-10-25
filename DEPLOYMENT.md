@@ -15,4 +15,4 @@ The Vercel frontend and Express API are separate services. The frontend cannot c
 2. Redeploy the frontend so the public environment variable is included in its build.
 3. The API accepts browser CORS requests from the frontend; no CORS environment variable is required.
 
-The login, registration, and dashboard API requests go through the frontend's same-origin `/api` proxy, which forwards them to the backend. In production it uses `API_URL`, then `NEXT_PUBLIC_API_URL`, then the Render URL above. In local development it forwards to `http://localhost:5000`.
+The login, registration, and dashboard API requests go through the frontend's same-origin `/api` proxy, which forwards them to the backend. It uses `API_URL`, then `NEXT_PUBLIC_API_URL`, then the Render URL above. To use a locally running backend during development, set `API_URL=http://localhost:5000` in the frontend environment.
