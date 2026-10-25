@@ -18,8 +18,13 @@ export const authenticateJWT = (req: AuthRequest, res: Response, next: NextFunct
         return res.status(401).json({ message: 'Token not found' });
     }
 
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+        return res.status(500).json({ message: 'Authentication is not configured' });
+    }
+
     try {
-        const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'development-secret');
+        const decoded: any = jwt.verify(token, jwtSecret);
         req.user = decoded;
         (req as any).userId = decoded.id;
         next();

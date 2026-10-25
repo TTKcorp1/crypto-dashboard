@@ -8,7 +8,22 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors({ origin: 'http://localhost:3000' }));
+const allowedOrigins = new Set(
+  (process.env.CORS_ORIGINS || 'http://localhost:3000,https://crypto-dashboard-wc3h.vercel.app')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean)
+);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.has(origin)) {
+      callback(null, true);
+      return;
+    }
+    callback(new Error(`Origin ${origin} is not allowed by CORS.`));
+  },
+}));
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -20,6 +35,10 @@ app.get('/test', (req, res) => {
 });
 
 const startServer = async () => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET is required.');
+  }
+
   await connectDB();
 
   mongoose.connection.once('connected', () => {

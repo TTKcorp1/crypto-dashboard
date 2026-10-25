@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/src/context/AuthContext';
+import { getApiUrl } from '@/src/lib/api';
 
 interface Investment {
   _id: string;
@@ -44,7 +45,7 @@ export default function DashboardPage() {
     const fetchInvestments = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:5000/api/investments', {
+        const response = await fetch(getApiUrl('/api/investments'), {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,

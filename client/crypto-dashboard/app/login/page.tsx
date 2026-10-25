@@ -4,6 +4,7 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/src/context/AuthContext';
+import { getApiUrl } from '@/src/lib/api';
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -19,9 +20,7 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-
-      const response = await fetch(`${apiUrl.replace(/\/$/, '')}/api/auth/login`, {
+      const response = await fetch(getApiUrl('/api/auth/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -43,7 +42,9 @@ export default function LoginPage() {
         setError(data.message || 'Login failed');
       }
     } catch (err) {
-      setError('Cannot connect to server');
+      setError(err instanceof Error && err.message.startsWith('Login service is not configured')
+        ? err.message
+        : 'Cannot connect to server');
     } finally {
       setLoading(false);
     }

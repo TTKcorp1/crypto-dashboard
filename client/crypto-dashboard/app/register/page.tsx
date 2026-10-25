@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { getApiUrl } from '@/src/lib/api';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
@@ -15,9 +16,7 @@ export default function RegisterPage() {
     setError('');
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-
-      const response = await fetch(`${apiUrl.replace(/\/$/, '')}/api/auth/register`, {
+      const response = await fetch(getApiUrl('/api/auth/register'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -34,8 +33,10 @@ export default function RegisterPage() {
       } else {
         setError(data.message || 'Registration failed');
       }
-    } catch {
-      setError('Cannot connect to server');
+    } catch (err) {
+      setError(err instanceof Error && err.message.startsWith('Login service is not configured')
+        ? err.message
+        : 'Cannot connect to server');
     } finally {
       setLoading(false);
     }

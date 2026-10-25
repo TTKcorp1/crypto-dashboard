@@ -53,9 +53,14 @@ export const loginUser = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET is required.');
+    }
+
     const token = jwt.sign(
       { id: user._id, email: user.email },
-      process.env.JWT_SECRET || 'development-secret',
+      jwtSecret,
       { expiresIn: '1d' }
     );
 

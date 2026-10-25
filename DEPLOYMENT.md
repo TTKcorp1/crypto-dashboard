@@ -1,0 +1,18 @@
+# Deployment
+
+The Vercel frontend and Express API are separate services. The frontend cannot call an API running on a developer's `localhost`.
+
+## Deploy the API
+
+1. Create a Render Blueprint from this repository and use the included `render.yaml`.
+2. Provide `MONGO_URI` when prompted. It must point to a MongoDB instance reachable from Render; a local `mongodb://127.0.0.1...` URI will not work in production.
+3. Render generates `JWT_SECRET`. Keep it private.
+4. Wait for the API service to finish deploying and copy its public HTTPS URL.
+
+## Connect Vercel to the API
+
+1. In the Vercel project settings, add `NEXT_PUBLIC_API_URL` with the Render API URL (for example, `https://crypto-dashboard-api.onrender.com`).
+2. Redeploy the frontend so the public environment variable is included in its build.
+3. Keep `CORS_ORIGINS` on Render set to the exact frontend origin, currently `https://crypto-dashboard-wc3h.vercel.app`. Add any custom domain or preview origins that need access.
+
+The login, registration, and dashboard API requests use `NEXT_PUBLIC_API_URL`. In local development they use `http://localhost:5000` by default.
