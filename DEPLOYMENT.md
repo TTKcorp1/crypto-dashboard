@@ -13,6 +13,6 @@ The Vercel frontend and Express API are separate services. The frontend cannot c
 
 1. In the Vercel project settings, add `NEXT_PUBLIC_API_URL` with the Render API URL (for example, `https://crypto-dashboard-api.onrender.com`).
 2. Redeploy the frontend so the public environment variable is included in its build.
-3. Keep `CORS_ORIGINS` on Render set to the exact frontend origin, currently `https://crypto-dashboard-wc3h.vercel.app`. Add any custom domain or preview origins that need access.
+3. The API accepts browser CORS requests from the frontend; no CORS environment variable is required.
 
 The login, registration, and dashboard API requests use `NEXT_PUBLIC_API_URL`. In local development they use `http://localhost:5000` by default.

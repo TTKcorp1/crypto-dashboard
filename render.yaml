@@ -14,5 +14,3 @@ services:
         generateValue: true
       - key: MONGO_URI
         sync: false
-      - key: CORS_ORIGINS
-        value: https://crypto-dashboard-wc3h.vercel.app

@@ -8,22 +8,7 @@ dotenv.config();
 
 const app = express();
 
-const allowedOrigins = new Set(
-  (process.env.CORS_ORIGINS || 'http://localhost:3000,https://crypto-dashboard-wc3h.vercel.app')
-    .split(',')
-    .map((origin) => origin.trim())
-    .filter(Boolean)
-);
-
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.has(origin)) {
-      callback(null, true);
-      return;
-    }
-    callback(new Error(`Origin ${origin} is not allowed by CORS.`));
-  },
-}));
+app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
