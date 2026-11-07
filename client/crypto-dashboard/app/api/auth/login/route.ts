@@ -65,6 +65,12 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Login API failed:', error);
+    if (error instanceof Error && error.message === 'MONGO_URI is not configured.') {
+      return NextResponse.json(
+        { message: 'Login is unavailable because the database is not configured.' },
+        { status: 503 },
+      );
+    }
     return NextResponse.json({ message: 'Unable to log in' }, { status: 500 });
   }
 }

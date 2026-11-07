@@ -52,6 +52,12 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error('Registration API failed:', error);
+    if (error instanceof Error && error.message === 'MONGO_URI is not configured.') {
+      return NextResponse.json(
+        { message: 'Registration is unavailable because the database is not configured.' },
+        { status: 503 },
+      );
+    }
     if (
       typeof error === 'object' &&
       error !== null &&
