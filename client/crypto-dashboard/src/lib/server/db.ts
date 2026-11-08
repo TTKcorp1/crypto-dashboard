@@ -19,6 +19,9 @@ globalWithMongoose.mongooseCache = cache;
 
 export async function connectToDatabase() {
   const uri = process.env.MONGO_URI;
+
+console.log('MongoDB URI configured:', Boolean(uri));
+console.log('MongoDB URI uses Atlas:', uri?.startsWith('mongodb+srv://'));
   if (!uri) {
     throw new Error('MONGO_URI is not configured.');
   }
